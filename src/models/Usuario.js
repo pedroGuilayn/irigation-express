@@ -34,14 +34,12 @@ const usuarioSchema = new mongoose.Schema({
   toObject: { virtuals: true },
 });
 
-// Virtual para relacionamento com Propriedades
 usuarioSchema.virtual('propriedades', {
   ref: 'Propriedade',
   localField: '_id',
   foreignField: 'usuarioId',
 });
 
-// Hash da senha antes de salvar
 usuarioSchema.pre('save', async function(next) {
   if (!this.isModified('senha')) return next();
   
@@ -54,12 +52,10 @@ usuarioSchema.pre('save', async function(next) {
   }
 });
 
-// Método para comparar senha
 usuarioSchema.methods.compararSenha = async function(senhaCandidata) {
   return await bcrypt.compare(senhaCandidata, this.senha);
 };
 
-// Não retornar senha nas queries
 usuarioSchema.methods.toJSON = function() {
   const obj = this.toObject();
   delete obj.senha;

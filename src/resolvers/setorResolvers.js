@@ -59,10 +59,8 @@ const setorResolvers = {
   },
 
   Mutation: {
-    // Criar setor
     criarSetor: async (_, { input }) => {
       try {
-        // Verificar se dispositivo existe
         const dispositivo = await Dispositivo.findById(input.dispositivoId);
         if (!dispositivo) {
           throw new Error('Dispositivo não encontrado');
@@ -76,7 +74,6 @@ const setorResolvers = {
       }
     },
 
-    // Atualizar setor
     atualizarSetor: async (_, { id, input }) => {
       try {
         const setor = await Setor.findById(id);
@@ -92,7 +89,6 @@ const setorResolvers = {
       }
     },
 
-    // Deletar setor
     deletarSetor: async (_, { id }) => {
       try {
         const setor = await Setor.findById(id);
@@ -107,7 +103,6 @@ const setorResolvers = {
       }
     },
 
-    // Iniciar irrigação
     iniciarIrrigacao: async (_, { setorId }) => {
       try {
         const setor = await Setor.findById(setorId);
@@ -126,7 +121,6 @@ const setorResolvers = {
       }
     },
 
-    // Parar irrigação
     pararIrrigacao: async (_, { setorId }) => {
       try {
         const setor = await Setor.findById(setorId);
@@ -142,7 +136,6 @@ const setorResolvers = {
       }
     },
 
-    // Programar irrigação
     programarIrrigacao: async (_, { setorId, horario }) => {
       try {
         const setor = await Setor.findById(setorId);
@@ -161,7 +154,6 @@ const setorResolvers = {
     },
   },
 
-  // Resolvers de campo
   Setor: {
     id: (parent) => parent._id,
     dispositivo: async (parent) => {

@@ -39,7 +39,6 @@ const propriedadeSchema = new mongoose.Schema({
   toObject: { virtuals: true },
 });
 
-// Virtual para relacionamento com Usuario
 propriedadeSchema.virtual('usuario', {
   ref: 'Usuario',
   localField: 'usuarioId',
@@ -47,14 +46,12 @@ propriedadeSchema.virtual('usuario', {
   justOne: true,
 });
 
-// Virtual para relacionamento com Dispositivos
 propriedadeSchema.virtual('dispositivos', {
   ref: 'Dispositivo',
   localField: '_id',
   foreignField: 'propriedadeId',
 });
 
-// Índices para performance
 propriedadeSchema.index({ usuarioId: 1 });
 propriedadeSchema.index({ nome: 1 });
 

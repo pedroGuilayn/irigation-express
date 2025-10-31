@@ -1,7 +1,6 @@
 
 const { GraphQLScalarType, Kind } = require('graphql');
 
-// Scalar para DateTime (com hora)
 const DateTimeScalar = new GraphQLScalarType({
   name: 'DateTime',
   description: 'Data e hora no formato ISO 8601',
@@ -25,7 +24,6 @@ const DateTimeScalar = new GraphQLScalarType({
   },
 });
 
-// Scalar para Date (apenas data)
 const DateScalar = new GraphQLScalarType({
   name: 'Date',
   description: 'Data no formato YYYY-MM-DD',

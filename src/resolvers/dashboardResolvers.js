@@ -3,7 +3,6 @@ const { Usuario, Propriedade, Dispositivo, Setor } = require('../models');
 
 const dashboardResolvers = {
   Query: {
-    // Dashboard completo do usuário
     dashboardUsuario: async (_, { usuarioId }) => {
       try {
         const usuario = await Usuario.findById(usuarioId);

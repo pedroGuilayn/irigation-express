@@ -62,7 +62,6 @@ const setorSchema = new mongoose.Schema({
   toObject: { virtuals: true },
 });
 
-// Virtual para relacionamento com Dispositivo
 setorSchema.virtual('dispositivo', {
   ref: 'Dispositivo',
   localField: 'dispositivoId',
@@ -70,19 +69,16 @@ setorSchema.virtual('dispositivo', {
   justOne: true,
 });
 
-// Método para verificar se deve irrigar agora
 setorSchema.methods.deveIrrigarAgora = function() {
   if (!this.horarioIrrigacao) return false;
   
   const agora = new Date();
   const horario = new Date(this.horarioIrrigacao);
   
-  // Verifica se está dentro de uma janela de 30 minutos
   const diferencaMinutos = Math.abs(agora - horario) / (1000 * 60);
   return diferencaMinutos <= 30;
 };
 
-// Índices para performance
 setorSchema.index({ dispositivoId: 1 });
 setorSchema.index({ status: 1 });
 setorSchema.index({ tipoCultura: 1 });

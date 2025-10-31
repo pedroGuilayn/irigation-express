@@ -3,7 +3,6 @@ const { Propriedade, Usuario, Dispositivo, Setor } = require('../models');
 
 const propriedadeResolvers = {
   Query: {
-    // Buscar propriedade por ID
     propriedade: async (_, { id }) => {
       try {
         const propriedade = await Propriedade.findById(id);
@@ -16,7 +15,6 @@ const propriedadeResolvers = {
       }
     },
 
-    // Listar propriedades com filtros
     propriedades: async (_, { usuarioId, pagina = 0, limite = 10 }) => {
       try {
         const skip = pagina * limite;
@@ -38,7 +36,6 @@ const propriedadeResolvers = {
       }
     },
 
-    // Estatísticas de propriedade
     estatisticasPropriedade: async (_, { propriedadeId }) => {
       try {
         const propriedade = await Propriedade.findById(propriedadeId);
@@ -55,12 +52,10 @@ const propriedadeResolvers = {
         const setoresPorStatus = {};
         const dispositivosPorStatus = {};
 
-        // Contar dispositivos por status
         dispositivos.forEach(d => {
           dispositivosPorStatus[d.status] = (dispositivosPorStatus[d.status] || 0) + 1;
         });
 
-        // Buscar setores e calcular estatísticas
         for (const dispositivo of dispositivos) {
           const setores = await Setor.find({ dispositivoId: dispositivo._id });
           totalSetores += setores.length;
@@ -92,10 +87,8 @@ const propriedadeResolvers = {
   },
 
   Mutation: {
-    // Criar propriedade
     criarPropriedade: async (_, { input }) => {
       try {
-        // Verificar se usuário existe
         const usuario = await Usuario.findById(input.usuarioId);
         if (!usuario) {
           throw new Error('Usuário não encontrado');
@@ -109,7 +102,6 @@ const propriedadeResolvers = {
       }
     },
 
-    // Atualizar propriedade
     atualizarPropriedade: async (_, { id, input }) => {
       try {
         const propriedade = await Propriedade.findById(id);
@@ -125,7 +117,6 @@ const propriedadeResolvers = {
       }
     },
 
-    // Deletar propriedade
     deletarPropriedade: async (_, { id }) => {
       try {
         const propriedade = await Propriedade.findById(id);
@@ -133,7 +124,6 @@ const propriedadeResolvers = {
           throw new Error('Propriedade não encontrada');
         }
 
-        // Deletar dispositivos e setores associados
         const dispositivos = await Dispositivo.find({ propriedadeId: id });
         
         for (const dispositivo of dispositivos) {
@@ -150,7 +140,6 @@ const propriedadeResolvers = {
     },
   },
 
-  // Resolvers de campo
   Propriedade: {
     id: (parent) => parent._id,
     usuario: async (parent) => {

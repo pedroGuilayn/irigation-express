@@ -60,7 +60,6 @@ const dispositivoSchema = new mongoose.Schema({
   toObject: { virtuals: true },
 });
 
-// Virtual para relacionamento com Propriedade
 dispositivoSchema.virtual('propriedade', {
   ref: 'Propriedade',
   localField: 'propriedadeId',
@@ -68,14 +67,12 @@ dispositivoSchema.virtual('propriedade', {
   justOne: true,
 });
 
-// Virtual para relacionamento com Setores
 dispositivoSchema.virtual('setores', {
   ref: 'Setor',
   localField: '_id',
   foreignField: 'dispositivoId',
 });
 
-// Índices para performance
 dispositivoSchema.index({ propriedadeId: 1 });
 dispositivoSchema.index({ status: 1 });
 dispositivoSchema.index({ tipo: 1 });

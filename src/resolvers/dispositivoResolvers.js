@@ -3,7 +3,6 @@ const { Dispositivo, Propriedade, Setor } = require('../models');
 
 const dispositivoResolvers = {
   Query: {
-    // Buscar dispositivo por ID
     dispositivo: async (_, { id }) => {
       try {
         const dispositivo = await Dispositivo.findById(id);
@@ -16,7 +15,6 @@ const dispositivoResolvers = {
       }
     },
 
-    // Listar dispositivos com filtros
     dispositivos: async (_, { filtros = {}, pagina = 0, limite = 10 }) => {
       try {
         const skip = pagina * limite;
@@ -44,10 +42,8 @@ const dispositivoResolvers = {
   },
 
   Mutation: {
-    // Criar dispositivo
     criarDispositivo: async (_, { input }) => {
       try {
-        // Verificar se propriedade existe
         const propriedade = await Propriedade.findById(input.propriedadeId);
         if (!propriedade) {
           throw new Error('Propriedade não encontrada');
@@ -61,7 +57,6 @@ const dispositivoResolvers = {
       }
     },
 
-    // Atualizar dispositivo
     atualizarDispositivo: async (_, { id, input }) => {
       try {
         const dispositivo = await Dispositivo.findById(id);
@@ -77,7 +72,6 @@ const dispositivoResolvers = {
       }
     },
 
-    // Deletar dispositivo
     deletarDispositivo: async (_, { id }) => {
       try {
         const dispositivo = await Dispositivo.findById(id);
@@ -85,7 +79,6 @@ const dispositivoResolvers = {
           throw new Error('Dispositivo não encontrado');
         }
 
-        // Deletar setores associados
         await Setor.deleteMany({ dispositivoId: id });
         await Dispositivo.findByIdAndDelete(id);
         
@@ -95,7 +88,6 @@ const dispositivoResolvers = {
       }
     },
 
-    // Alterar status do dispositivo
     alterarStatusDispositivo: async (_, { id, status }) => {
       try {
         const dispositivo = await Dispositivo.findById(id);
@@ -112,8 +104,7 @@ const dispositivoResolvers = {
       }
     },
   },
-
-  // Resolvers de campo
+  
   Dispositivo: {
     id: (parent) => parent._id,
     propriedade: async (parent) => {

@@ -686,7 +686,7 @@ mutation AtualizarSetor {
     id: "COLE-O-ID-DO-SETOR-AQUI"
     input: {
       nome: "Setor B - Soja"
-      area: 30.0
+      area: 30.0  
       tipoCultura: "Soja"
       status: ATIVO
     }

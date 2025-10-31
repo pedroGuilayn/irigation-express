@@ -7,12 +7,9 @@ const setorResolvers = require('./setorResolvers');
 const dashboardResolvers = require('./dashboardResolvers');
 const scalars = require('./scalars');
 
-// Combinar todos os resolvers
 const resolvers = {
-  // Scalars customizados
   ...scalars,
 
-  // Queries
   Query: {
     ...usuarioResolvers.Query,
     ...propriedadeResolvers.Query,
@@ -21,7 +18,6 @@ const resolvers = {
     ...dashboardResolvers.Query,
   },
 
-  // Mutations
   Mutation: {
     ...usuarioResolvers.Mutation,
     ...propriedadeResolvers.Mutation,
@@ -29,7 +25,6 @@ const resolvers = {
     ...setorResolvers.Mutation,
   },
 
-  // Resolvers de tipo (relacionamentos)
   Usuario: usuarioResolvers.Usuario,
   Propriedade: propriedadeResolvers.Propriedade,
   Dispositivo: dispositivoResolvers.Dispositivo,
