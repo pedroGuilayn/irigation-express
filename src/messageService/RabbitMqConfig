@@ -1,0 +1,120 @@
+// /c:/Users/Admin/repos/advanced-topics/irigation-express/src/messageService/RabbitMqConfig.js
+// Classe que gerencia conexão com RabbitMQ e expõe um channel reutilizável para injeção
+
+const amqplib = require('amqplib');
+
+class RabbitMqConfig {
+    /**
+     * @param {Object} opts
+     * @param {string} opts.url - URL de conexão (ex: amqp://guest:guest@localhost:5672)
+     * @param {number} [opts.prefetch=1] - prefetch para o channel
+     * @param {number} [opts.reconnectInterval=5000] - ms entre tentativas de reconexão
+     */
+    constructor(opts = {}) {
+        this.url = opts.url || 'amqp://localhost';
+        this.prefetch = opts.prefetch || 1;
+        this.reconnectInterval = opts.reconnectInterval || 5000;
+
+        this.connection = null;
+        this.channel = null;
+        this._isClosing = false;
+        this._connectPromise = null;
+    }
+
+    // conecta e cria channel (singleton)
+    async connect() {
+        if (this._connectPromise) return this._connectPromise;
+
+        this._connectPromise = (async () => {
+            while (!this._isClosing) {
+                try {
+                    this.connection = await amqplib.connect(this.url);
+
+                    // tratar fechamento inesperado
+                    this.connection.on('error', err => {
+                        // amqplib emite 'error' quando a conexão cai
+                        // deixa o loop de reconexão cuidar do restabelecimento
+                        // console.error('RabbitMQ connection error', err);
+                    });
+
+                    this.connection.on('close', () => {
+                        this.connection = null;
+                        this.channel = null;
+                        if (!this._isClosing) {
+                            // tenta reconectar após intervalo
+                            setTimeout(() => {
+                                this._connectPromise = null;
+                                this.connect().catch(() => {});
+                            }, this.reconnectInterval);
+                        }
+                    });
+
+                    this.channel = await this.connection.createChannel();
+                    await this.channel.prefetch(this.prefetch);
+                    return this; // conectado com channel pronto
+                } catch (err) {
+                    // falha de conexão: espera e tenta novamente
+                    // console.error('RabbitMQ connect failed, retrying...', err);
+                    await new Promise(res => setTimeout(res, this.reconnectInterval));
+                }
+            }
+            throw new Error('RabbitMqConfig: shut down while connecting');
+        })();
+
+        return this._connectPromise;
+    }
+
+    // garante conexão e retorna channel
+    async getChannel() {
+        if (this.channel) return this.channel;
+        await this.connect();
+        return this.channel;
+    }
+
+    // utilitário: garante fila e publica mensagem
+    async publishToQueue(queue, message, options = {}) {
+        const ch = await this.getChannel();
+        await ch.assertQueue(queue, { durable: true });
+        const buffer = Buffer.isBuffer(message) ? message : Buffer.from(JSON.stringify(message));
+        return ch.sendToQueue(queue, buffer, Object.assign({ persistent: true }, options));
+    }
+
+    // utilitário: criar exchange e publicar
+    async publishToExchange(exchange, routingKey, message, opts = {}) {
+        const ch = await this.getChannel();
+        await ch.assertExchange(exchange, opts.type || 'direct', { durable: opts.durable ?? true });
+        const buffer = Buffer.isBuffer(message) ? message : Buffer.from(JSON.stringify(message));
+        return ch.publish(exchange, routingKey || '', buffer, opts);
+    }
+
+    // utilitário: criar fila e consumir
+    async consume(queue, onMessage, options = {}) {
+        const ch = await this.getChannel();
+        await ch.assertQueue(queue, { durable: true });
+        return ch.consume(queue, onMessage, options);
+    }
+
+    // fecha conexão limpa
+    async close() {
+        this._isClosing = true;
+        try {
+            if (this.channel) {
+                await this.channel.close();
+                this.channel = null;
+            }
+        } catch (e) {
+            // ignore
+        }
+        try {
+            if (this.connection) {
+                await this.connection.close();
+                this.connection = null;
+            }
+        } catch (e) {
+            // ignore
+        }
+        this._connectPromise = null;
+    }
+}
+
+module.exports = RabbitMqConfig;

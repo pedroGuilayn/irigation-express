@@ -12,7 +12,7 @@ async function startServer() {
   // Middleware
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-
+  
   // Conectar ao MongoDB
   await connectDB();
 
@@ -37,6 +37,8 @@ async function startServer() {
     introspection: process.env.GRAPHQL_INTROSPECTION === 'true',
     playground: process.env.GRAPHQL_PLAYGROUND === 'true',
   });
+
+  // Message Service
 
   // Iniciar Apollo Server
   await server.start();
