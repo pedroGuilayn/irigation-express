@@ -1,126 +1,67 @@
-# 🌱 API GraphQL - Sistema de Irrigação Inteligente
+# API GraphQL - Sistema de Irrigação Inteligente
 
-![Node.js](https://img.shields.io/badge/Node.js-18.x-green)
-![GraphQL](https://img.shields.io/badge/GraphQL-16.8-E10098)
-![Apollo Server](https://img.shields.io/badge/Apollo%20Server-3.13-311C87)
-![MongoDB](https://img.shields.io/badge/MongoDB-8.0-47A248)
-![License](https://img.shields.io/badge/license-MIT-blue)
+API GraphQL focada exclusivamente no **gerenciamento de irrigação** para sistemas de agricultura inteligente. Esta API trabalha em conjunto com uma API externa (Spring Boot) que gerencia Usuários, Dispositivos, Setores e Propriedades.
 
-API GraphQL completa para gerenciamento de sistemas de irrigação agrícola inteligente. Desenvolvida com Node.js, Express, Apollo Server e MongoDB.
+## 🎯 Objetivo
 
----
+Esta API é responsável por:
+- ✅ Programação de Irrigação (única, diária, semanal, personalizada)
+- ✅ Controle de Irrigação em Tempo Real (iniciar/parar)
+- ✅ Histórico de Irrigações
+- ✅ Monitoramento e Alertas
+- ✅ Relatórios e Estatísticas de Consumo
 
-## 📋 Índice
+**IMPORTANTE:** Usuários, Dispositivos, Setores e Propriedades são gerenciados pela API externa em Spring Boot.
 
-- [Características](#-características)
-- [Tecnologias](#-tecnologias)
-- [Estrutura do Projeto](#-estrutura-do-projeto)
-- [Instalação](#-instalação)
-- [Configuração](#-configuração)
-- [Executar o Projeto](#-executar-o-projeto)
-- [Modelo de Dados](#-modelo-de-dados)
-- [API GraphQL](#-api-graphql)
-- [Exemplos de Uso](#-exemplos-de-uso)
-- [Testes](#-testes)
-
----
-
-## ✨ Características
-
-✅ **API GraphQL Completa** - Queries, Mutations e Resolvers otimizados  
-✅ **4 Entidades Relacionadas** - Usuario, Propriedade, Dispositivo, Setor  
-✅ **Validações Robustas** - Mongoose schemas com validações completas  
-✅ **Hash de Senhas** - Bcrypt para segurança de senhas  
-✅ **Relacionamentos** - Resolvers que implementam relacionamentos entre entidades  
-✅ **Paginação** - Suporte a paginação em todas as listagens  
-✅ **Filtros** - Queries com suporte a filtros avançados  
-✅ **GraphQL Playground** - Interface interativa para testar queries  
-✅ **Dashboard Agregado** - Estatísticas e métricas do sistema  
-✅ **Operações de Irrigação** - Controle completo de irrigação dos setores  
-
----
-
-## 🔧 Tecnologias
-
-### Backend
-- **Node.js 18+** - Runtime JavaScript
-- **Express 4.18** - Framework web
-- **Apollo Server 3.13** - Servidor GraphQL
-- **GraphQL 16.8** - Linguagem de consulta
-
-### Database
-- **MongoDB Atlas** - Banco de dados em nuvem
-- **Mongoose 8.0** - ODM para MongoDB
-
-### Segurança
-- **Bcryptjs** - Hash de senhas
-- **UUID** - Identificadores únicos
-
-### Desenvolvimento
-- **Nodemon** - Hot reload em desenvolvimento
-- **Dotenv** - Gerenciamento de variáveis de ambiente
-
----
-
-## 📁 Estrutura do Projeto
+## 🏗️ Arquitetura
 
 ```
-api_irrigacao_graphql/
-├── src/
-│   ├── config/
-│   │   └── database.js          # Configuração do MongoDB
-│   ├── models/
-│   │   ├── Usuario.js           # Model de Usuário
-│   │   ├── Propriedade.js       # Model de Propriedade
-│   │   ├── Dispositivo.js       # Model de Dispositivo
-│   │   ├── Setor.js             # Model de Setor
-│   │   └── index.js             # Exportação dos models
-│   ├── schemas/
-│   │   └── typeDefs.js          # Schema GraphQL (types, queries, mutations)
-│   ├── resolvers/
-│   │   ├── usuarioResolvers.js      # Resolvers de Usuário
-│   │   ├── propriedadeResolvers.js  # Resolvers de Propriedade
-│   │   ├── dispositivoResolvers.js  # Resolvers de Dispositivo
-│   │   ├── setorResolvers.js        # Resolvers de Setor
-│   │   ├── dashboardResolvers.js    # Resolvers agregados
-│   │   ├── scalars.js               # Scalars customizados
-│   │   └── index.js                 # Combinação de todos os resolvers
-│   └── server.js                # Servidor Express + Apollo
-├── .env                         # Variáveis de ambiente
-├── .env.example                 # Exemplo de variáveis
-├── .gitignore                   # Arquivos ignorados
-├── package.json                 # Dependências
-├── README.md                    # Documentação
-└── EXAMPLES.md                  # Exemplos de queries GraphQL
+┌─────────────────────────────────────────┐
+│   API Externa (Spring Boot)             │
+│   - Usuários                            │
+│   - Propriedades                        │
+│   - Dispositivos                        │
+│   - Setores                             │
+└─────────────────┬───────────────────────┘
+                  │
+                  │ HTTP REST
+                  │
+┌─────────────────▼───────────────────────┐
+│   API GraphQL (Esta API)                │
+│   - Programação de Irrigação            │
+│   - Controle de Irrigação               │
+│   - Histórico                           │
+│   - Alertas                             │
+│   - Relatórios                          │
+└─────────────────────────────────────────┘
 ```
 
----
+## 📦 Tecnologias
+
+- **Node.js** - Runtime JavaScript
+- **GraphQL** - API Query Language
+- **Apollo Server** - GraphQL Server
+- **MongoDB** - Banco de dados para dados de irrigação
+- **Mongoose** - ODM para MongoDB
+- **Express** - Framework web
+- **Axios** - Cliente HTTP para comunicação com API externa
 
 ## 🚀 Instalação
 
-### Pré-requisitos
-
-- Node.js 18+ instalado
-- NPM ou Yarn
-- MongoDB Atlas account (ou MongoDB local)
-
-### Passo 1: Clonar o repositório
+### 1. Clone o repositório
 
 ```bash
-cd /home/ubuntu/api_irrigacao_graphql
+git clone <url-do-repositorio>
+cd api_irrigacao_graphql
 ```
 
-### Passo 2: Instalar dependências
+### 2. Instale as dependências
 
 ```bash
 npm install
 ```
 
----
-
-## ⚙️ Configuração
-
-### 1. Configurar variáveis de ambiente
+### 3. Configure as variáveis de ambiente
 
 Copie o arquivo `.env.example` para `.env`:
 
@@ -128,394 +69,83 @@ Copie o arquivo `.env.example` para `.env`:
 cp .env.example .env
 ```
 
-### 2. Editar o arquivo `.env`
+Edite o arquivo `.env` com suas configurações:
 
 ```env
-# MongoDB Configuration
-MONGODB_URI=mongodb+srv://seu_usuario:sua_senha@cluster.mongodb.net/?retryWrites=true&w=majority
-DB_NAME=irrigacao_db
-
-# Server Configuration
 PORT=4000
 NODE_ENV=development
-
-# GraphQL Configuration
-GRAPHQL_PLAYGROUND=true
+MONGODB_URI=mongodb://localhost:27017/irrigacao_db
+API_EXTERNA_URL=http://localhost:8080/api
 GRAPHQL_INTROSPECTION=true
+GRAPHQL_PLAYGROUND=true
 ```
 
-**Importante:** Substitua a `MONGODB_URI` com suas credenciais do MongoDB Atlas.
+### 4. Inicie o MongoDB
 
----
-
-## ▶️ Executar o Projeto
-
-### Modo Desenvolvimento (com hot reload)
+Certifique-se de que o MongoDB está rodando:
 
 ```bash
+# Linux/Mac
+sudo systemctl start mongod
+
+# Docker
+docker run -d -p 27017:27017 --name mongodb mongo:latest
+```
+
+### 5. Inicie a API
+
+```bash
+# Modo desenvolvimento (com hot reload)
 npm run dev
-```
 
-### Modo Produção
-
-```bash
+# Modo produção
 npm start
 ```
 
-### Resultado esperado:
+A API estará disponível em `http://localhost:4000`
 
-```
-✅ MongoDB conectado com sucesso!
-📦 Database: irrigacao_db
-🔗 Mongoose conectado ao MongoDB
+## 🎮 GraphQL Playground
 
-🚀 ========================================
-🚀  Servidor iniciado com sucesso!
-🚀 ========================================
-📡 Servidor rodando em: http://localhost:4000
-🎯 GraphQL endpoint: http://localhost:4000/graphql
-🎮 GraphQL Playground: http://localhost:4000/graphql
-💚 Health Check: http://localhost:4000/health
-🚀 ========================================
-```
+Acesse `http://localhost:4000/graphql` para usar o GraphQL Playground interativo.
 
-### Acessar GraphQL Playground
+## 📚 Funcionalidades
 
-Abra no navegador: **http://localhost:4000/graphql**
+### 1. Programação de Irrigação
 
----
-
-## 💾 Modelo de Dados
-
-### Relacionamentos
-
-```
-Usuario (1) ──→ (N) Propriedade (1) ──→ (N) Dispositivo (1) ──→ (N) Setor
-```
-
-### 1. **Usuario**
-
-```javascript
-{
-  id: UUID,
-  nome: String,
-  email: String (unique),
-  senha: String (hashed),
-  propriedades: [Propriedade] // virtual
-}
-```
-
-### 2. **Propriedade**
-
-```javascript
-{
-  id: UUID,
-  nome: String,
-  localizacao: String,
-  tamanho: Number,
-  usuarioId: UUID,
-  usuario: Usuario,        // virtual
-  dispositivos: [Dispositivo] // virtual
-}
-```
-
-### 3. **Dispositivo**
-
-```javascript
-{
-  id: UUID,
-  nome: String,
-  tipo: Enum ['CONTROLADOR', 'SENSOR', 'ATUADOR', 'OUTRO'],
-  modelo: String,
-  status: Enum ['ATIVO', 'INATIVO', 'MANUTENCAO', 'FALHA'],
-  dataInstalacao: Date,
-  propriedadeId: UUID,
-  propriedade: Propriedade, // virtual
-  setores: [Setor]         // virtual
-}
-```
-
-### 4. **Setor**
-
-```javascript
-{
-  id: UUID,
-  nome: String,
-  area: Number,
-  tipoCultura: String,
-  status: Enum ['ATIVO', 'AGUARDANDO', 'EM_MANUTENCAO', 'DESATIVADO'],
-  horarioIrrigacao: DateTime,
-  ultimaIrrigacao: DateTime,
-  foiIrrigadoNaHora: Boolean,
-  dispositivoId: UUID,
-  dispositivo: Dispositivo // virtual
-}
-```
-
----
-
-## 🎯 API GraphQL
-
-### Queries Disponíveis
-
-#### Usuários
-- `usuario(id: ID!)` - Buscar usuário por ID
-- `usuarios(pagina: Int, limite: Int)` - Listar usuários
-- `usuarioPorEmail(email: String!)` - Buscar por email
-
-#### Propriedades
-- `propriedade(id: ID!)` - Buscar propriedade por ID
-- `propriedades(usuarioId: ID, pagina: Int, limite: Int)` - Listar propriedades
-
-#### Dispositivos
-- `dispositivo(id: ID!)` - Buscar dispositivo por ID
-- `dispositivos(filtros: FiltroDispositivo, pagina: Int, limite: Int)` - Listar dispositivos
-
-#### Setores
-- `setor(id: ID!)` - Buscar setor por ID
-- `setores(filtros: FiltroSetor, pagina: Int, limite: Int)` - Listar setores
-- `setoresParaIrrigar(dispositivoId: ID)` - Listar setores para irrigar agora
-
-#### Agregados
-- `dashboardUsuario(usuarioId: ID!)` - Dashboard completo do usuário
-- `estatisticasPropriedade(propriedadeId: ID!)` - Estatísticas de propriedade
-
-### Mutations Disponíveis
-
-#### Usuários
-- `criarUsuario(input: UsuarioInput!)` - Criar usuário
-- `atualizarUsuario(id: ID!, input: UsuarioUpdateInput!)` - Atualizar
-- `deletarUsuario(id: ID!)` - Deletar (em cascata)
-
-#### Propriedades
-- `criarPropriedade(input: PropriedadeInput!)` - Criar propriedade
-- `atualizarPropriedade(id: ID!, input: PropriedadeUpdateInput!)` - Atualizar
-- `deletarPropriedade(id: ID!)` - Deletar (em cascata)
-
-#### Dispositivos
-- `criarDispositivo(input: DispositivoInput!)` - Criar dispositivo
-- `atualizarDispositivo(id: ID!, input: DispositivoUpdateInput!)` - Atualizar
-- `deletarDispositivo(id: ID!)` - Deletar (em cascata)
-- `alterarStatusDispositivo(id: ID!, status: StatusDispositivo!)` - Alterar status
-
-#### Setores
-- `criarSetor(input: SetorInput!)` - Criar setor
-- `atualizarSetor(id: ID!, input: SetorUpdateInput!)` - Atualizar
-- `deletarSetor(id: ID!)` - Deletar
-- `iniciarIrrigacao(setorId: ID!)` - Iniciar irrigação
-- `pararIrrigacao(setorId: ID!)` - Parar irrigação
-- `programarIrrigacao(setorId: ID!, horario: DateTime!)` - Programar
-
----
-
-## 📖 Exemplos de Uso
-
-### 1. Criar um Usuário
+#### Criar Programação
 
 ```graphql
 mutation {
-  criarUsuario(input: {
-    nome: "João Silva"
-    email: "joao@example.com"
-    senha: "senha123"
+  criarProgramacao(input: {
+    nome: "Irrigação Diária Manhã"
+    setorId: "123"
+    ativa: true
+    tipoRecorrencia: DIARIA
+    horarioInicio: "06:00"
+    duracao: 30
+    volumeAgua: 1000
+    prioridade: 5
   }) {
     id
     nome
-    email
-    createdAt
+    ativa
   }
 }
 ```
 
-### 2. Criar uma Propriedade
-
-```graphql
-mutation {
-  criarPropriedade(input: {
-    nome: "Fazenda Alegria"
-    localizacao: "Estrada Rural 123, Interior - PR"
-    tamanho: 150.5
-    usuarioId: "usuario-id-aqui"
-  }) {
-    id
-    nome
-    tamanho
-    usuario {
-      nome
-      email
-    }
-  }
-}
-```
-
-### 3. Criar um Dispositivo
-
-```graphql
-mutation {
-  criarDispositivo(input: {
-    nome: "Controlador Central"
-    tipo: CONTROLADOR
-    modelo: "X-200"
-    status: ATIVO
-    dataInstalacao: "2025-01-15"
-    propriedadeId: "propriedade-id-aqui"
-  }) {
-    id
-    nome
-    tipo
-    status
-    propriedade {
-      nome
-    }
-  }
-}
-```
-
-### 4. Criar um Setor
-
-```graphql
-mutation {
-  criarSetor(input: {
-    nome: "Setor A - Milho"
-    area: 25.5
-    tipoCultura: "Milho"
-    status: AGUARDANDO
-    horarioIrrigacao: "2025-10-16T06:00:00Z"
-    dispositivoId: "dispositivo-id-aqui"
-  }) {
-    id
-    nome
-    area
-    tipoCultura
-    status
-    dispositivo {
-      nome
-    }
-  }
-}
-```
-
-### 5. Buscar Dashboard Completo
+#### Listar Programações
 
 ```graphql
 query {
-  dashboardUsuario(usuarioId: "usuario-id-aqui") {
-    usuario {
-      nome
-      email
-    }
-    totalPropriedades
-    totalDispositivos
-    totalSetores
-    setoresAtivos
-    dispositivosAtivos
-  }
-}
-```
-
-### 6. Buscar Propriedade com Relacionamentos
-
-```graphql
-query {
-  propriedade(id: "propriedade-id") {
-    id
-    nome
-    localizacao
-    tamanho
-    usuario {
-      nome
-      email
-    }
-    dispositivos {
+  programacoes(pagina: 0, limite: 10) {
+    programacoes {
       id
       nome
-      tipo
-      status
-      setores {
-        id
-        nome
-        area
-        tipoCultura
-        status
-      }
-    }
-  }
-}
-```
-
-### 7. Iniciar Irrigação em um Setor
-
-```graphql
-mutation {
-  iniciarIrrigacao(setorId: "setor-id-aqui") {
-    id
-    nome
-    status
-    ultimaIrrigacao
-    foiIrrigadoNaHora
-  }
-}
-```
-
-### 8. Listar Setores para Irrigar Agora
-
-```graphql
-query {
-  setoresParaIrrigar {
-    id
-    nome
-    area
-    tipoCultura
-    horarioIrrigacao
-    dispositivo {
-      nome
-      propriedade {
-        nome
-      }
-    }
-  }
-}
-```
-
-### 9. Estatísticas de Propriedade
-
-```graphql
-query {
-  estatisticasPropriedade(propriedadeId: "propriedade-id") {
-    propriedade {
-      nome
-      tamanho
-    }
-    totalDispositivos
-    totalSetores
-    areaTotal
-    setoresPorStatus {
-      status
-      count
-    }
-    dispositivosPorStatus {
-      status
-      count
-    }
-  }
-}
-```
-
-### 10. Listar Usuários com Todas as Propriedades
-
-```graphql
-query {
-  usuarios(pagina: 0, limite: 10) {
-    usuarios {
-      id
-      nome
-      email
-      propriedades {
-        id
-        nome
-        localizacao
-        tamanho
-      }
+      setorId
+      tipoRecorrencia
+      horarioInicio
+      duracao
+      ativa
     }
     total
     pagina
@@ -524,78 +154,341 @@ query {
 }
 ```
 
----
+#### Próximas Irrigações
 
-## 🔒 Validações Implementadas
+```graphql
+query {
+  proximasIrrigacoes(limite: 10) {
+    setorId
+    programacaoId
+    dataHora
+    duracao
+  }
+}
+```
 
-### Usuario
-- Nome: 3-100 caracteres
-- Email: formato válido e único
-- Senha: mínimo 6 caracteres (hashed com bcrypt)
+### 2. Controle de Irrigação
 
-### Propriedade
-- Nome: 3-100 caracteres
-- Tamanho: maior que 0
-- Usuario: deve existir
+#### Iniciar Irrigação Manual
 
-### Dispositivo
-- Nome: 3-100 caracteres
-- Tipo: CONTROLADOR | SENSOR | ATUADOR | OUTRO
-- Status: ATIVO | INATIVO | MANUTENCAO | FALHA
-- Data Instalação: não pode ser no futuro
-- Propriedade: deve existir
+```graphql
+mutation {
+  iniciarIrrigacaoManual(input: {
+    setorId: "123"
+    duracao: 20
+    volumeAgua: 500
+    usuarioId: "user123"
+    observacoes: "Irrigação emergencial"
+  }) {
+    id
+    setorId
+    status
+    dataHoraInicio
+  }
+}
+```
 
-### Setor
-- Nome: 3-100 caracteres
-- Área: maior que 0
-- Status: ATIVO | AGUARDANDO | EM_MANUTENCAO | DESATIVADO
-- Dispositivo: deve existir
+#### Parar Irrigação
 
----
+```graphql
+mutation {
+  pararIrrigacao(input: {
+    setorId: "123"
+    usuarioId: "user123"
+    motivo: "Chuva inesperada"
+  }) {
+    id
+    status
+    dataHoraFim
+    duracaoReal
+  }
+}
+```
+
+### 3. Histórico de Irrigações
+
+#### Listar Histórico
+
+```graphql
+query {
+  historicos(
+    filtros: {
+      setorId: "123"
+      dataInicio: "2024-01-01T00:00:00Z"
+      dataFim: "2024-12-31T23:59:59Z"
+    }
+    pagina: 0
+    limite: 10
+  ) {
+    historicos {
+      id
+      setorId
+      tipoIrrigacao
+      status
+      dataHoraInicio
+      dataHoraFim
+      duracaoReal
+      volumeAguaReal
+      eficiencia {
+        tempo
+        volume
+        media
+      }
+    }
+    total
+  }
+}
+```
+
+#### Status de Irrigação do Setor
+
+```graphql
+query {
+  statusIrrigacaoSetor(setorId: "123") {
+    setorId
+    emIrrigacao
+    ultimaIrrigacao
+    proximaIrrigacao
+    totalIrrigacoesHoje
+    totalIrrigacoesSemana
+    alertas {
+      tipo
+      mensagem
+      dataHora
+      lido
+    }
+  }
+}
+```
+
+### 4. Alertas
+
+#### Listar Alertas Ativos
+
+```graphql
+query {
+  alertasAtivos(limite: 20) {
+    id
+    tipo
+    severidade
+    titulo
+    descricao
+    setorId
+    status
+    lido
+    createdAt
+  }
+}
+```
+
+#### Resolver Alerta
+
+```graphql
+mutation {
+  resolverAlerta(
+    id: "alert123"
+    usuarioId: "user123"
+    observacoes: "Problema resolvido"
+  ) {
+    id
+    status
+    dataResolucao
+  }
+}
+```
+
+### 5. Relatórios
+
+#### Relatório de Consumo
+
+```graphql
+query {
+  relatorioConsumo(
+    setorId: "123"
+    dataInicio: "2024-01-01T00:00:00Z"
+    dataFim: "2024-01-31T23:59:59Z"
+  ) {
+    setorId
+    periodo
+    totalIrrigacoes
+    volumeTotalAgua
+    volumeMedioAgua
+    duracaoTotalMinutos
+    irrigacoesProgramadas
+    irrigacoesManuais
+    falhas
+    eficienciaMedia
+    consumoPorDia {
+      data
+      totalIrrigacoes
+      volumeAgua
+      duracaoMinutos
+    }
+  }
+}
+```
+
+#### Dashboard Geral
+
+```graphql
+query {
+  dashboardIrrigacao {
+    setoresEmIrrigacao
+    irrigacoesHoje
+    consumoHoje
+    consumoSemana
+    consumoMes
+    proximasIrrigacoes {
+      setorId
+      dataHora
+      duracao
+    }
+    alertasAtivos {
+      id
+      tipo
+      severidade
+      titulo
+    }
+  }
+}
+```
+
+## 🗄️ Modelos de Dados
+
+### ProgramacaoIrrigacao
+- Armazena programações de irrigação (única, diária, semanal)
+- Suporta recorrência e validade
+- Prioridades configuráveis
+
+### HistoricoIrrigacao
+- Registra todas as irrigações realizadas
+- Armazena dados de consumo e eficiência
+- Diferencia tipos (programada, manual, emergencial)
+
+### StatusIrrigacao
+- Status em tempo real de cada setor
+- Contadores de irrigações
+- Alertas embutidos
+
+### Alerta
+- Sistema de notificações
+- Severidade configurável
+- Rastreamento de resolução
+
+## 🔗 Integração com API Externa
+
+A comunicação com a API externa (Spring Boot) é feita através do serviço `apiExterna.js` localizado em `src/services/`.
+
+### Endpoints esperados da API externa:
+
+```
+GET  /api/usuarios/{id}
+GET  /api/usuarios?pagina=0&limite=10
+
+GET  /api/propriedades/{id}
+GET  /api/propriedades?usuarioId=123
+
+GET  /api/dispositivos/{id}
+POST /api/dispositivos/{id}/comandos
+GET  /api/dispositivos/{id}/status
+
+GET  /api/setores/{id}
+GET  /api/setores?dispositivoId=123
+```
+
+## 📁 Estrutura do Projeto
+
+```
+api_irrigacao_graphql/
+├── src/
+│   ├── config/
+│   │   └── database.js          # Configuração MongoDB
+│   ├── models/
+│   │   ├── ProgramacaoIrrigacao.js
+│   │   ├── HistoricoIrrigacao.js
+│   │   ├── StatusIrrigacao.js
+│   │   ├── Alerta.js
+│   │   └── index.js
+│   ├── resolvers/
+│   │   ├── programacaoResolvers.js
+│   │   ├── controleResolvers.js
+│   │   ├── historicoResolvers.js
+│   │   ├── alertaResolvers.js
+│   │   ├── relatorioResolvers.js
+│   │   ├── scalars.js
+│   │   └── index.js
+│   ├── schemas/
+│   │   └── typeDefsIrrigacao.js # Schema GraphQL
+│   ├── services/
+│   │   └── apiExterna.js        # Cliente API externa
+│   └── server.js                # Servidor principal
+├── .env.example
+├── .gitignore
+├── package.json
+└── README.md
+```
 
 ## 🧪 Testes
-
-Para rodar os testes (quando implementados):
 
 ```bash
 npm test
 ```
 
----
+## 🐛 Debug
 
-## 📚 Documentação Adicional
+Para habilitar logs detalhados:
 
-- **EXAMPLES.md** - Exemplos completos de todas as queries e mutations
-- **GraphQL Playground** - Documentação interativa em `/graphql`
+```env
+NODE_ENV=development
+```
 
----
+## 📝 Tipos de Recorrência
 
-## 🤝 Contribuindo
+- `UNICA` - Execução única em data/hora específica
+- `DIARIA` - Execução diária no horário especificado
+- `SEMANAL` - Execução em dias específicos da semana
+- `PERSONALIZADA` - Regras customizadas
 
-1. Fork o projeto
-2. Crie sua feature branch (`git checkout -b feature/NovaFuncionalidade`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/NovaFuncionalidade`)
-5. Abra um Pull Request
+## ⚠️ Tipos de Alertas
 
----
+- `FALHA_IRRIGACAO` - Falha na execução
+- `IRRIGACAO_ATRASADA` - Irrigação não executada no horário
+- `CONSUMO_ELEVADO` - Consumo acima do esperado
+- `DISPOSITIVO_OFFLINE` - Dispositivo não responde
+- `SETOR_INATIVO` - Setor desativado
+- `PROGRAMACAO_CONFLITO` - Conflito de programações
+- `SENSOR_FALHA` - Sensor com problema
+- `MANUTENCAO_NECESSARIA` - Manutenção preventiva
+
+## 🔒 Segurança
+
+- Validação de dados de entrada
+- Sanitização de queries
+- Rate limiting (a implementar)
+- Autenticação JWT (a implementar)
+
+## 🚧 Melhorias Futuras
+
+- [ ] Autenticação e Autorização
+- [ ] WebSocket para atualizações em tempo real
+- [ ] Integração com APIs de clima
+- [ ] Otimização automática de irrigação baseada em ML
+- [ ] Notificações push
+- [ ] Cache com Redis
+- [ ] Testes unitários e de integração
+
+## 👥 Contribuindo
+
+Este é um projeto acadêmico da UTFPR.
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT.
+MIT
+
+## 📞 Suporte
+
+Para questões sobre o projeto, consulte a documentação ou entre em contato com a equipe de desenvolvimento.
 
 ---
 
-## 👨‍💻 Autor
-
-**UTFPR - Universidade Tecnológica Federal do Paraná**
-
----
-
-## 🆘 Suporte
-
-Para suporte, envie um email para: suporte@example.com
-
----
-
-**Desenvolvido com ❤️ para gerenciamento inteligente de irrigação agrícola**
+Desenvolvido com ❤️ para o projeto de Tópicos Avançados - UTFPR

@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const connectDB = require('./config/database');
-const typeDefs = require('./schemas/typeDefs');
+const typeDefsIrrigacao = require('./schemas/typeDefsIrrigacao');
 const resolvers = require('./resolvers');
 
 async function startServer() {
@@ -18,7 +18,7 @@ async function startServer() {
 
   // Configurar Apollo Server
   const server = new ApolloServer({
-    typeDefs,
+    typeDefs: typeDefsIrrigacao,
     resolvers,
     context: ({ req }) => {
       // Aqui você pode adicionar autenticação, usuário logado, etc
@@ -60,10 +60,18 @@ async function startServer() {
   app.get('/', (req, res) => {
     res.json({
       message: '🌱 API GraphQL - Sistema de Irrigação Inteligente',
-      version: '1.0.0',
+      description: 'API focada em gerenciamento de irrigação. Usuários, Dispositivos, Setores e Propriedades são gerenciados pela API externa.',
+      version: '2.0.0',
       graphql: `http://localhost:${PORT}${server.graphqlPath}`,
       health: `http://localhost:${PORT}/health`,
-      docs: 'Acesse /graphql para ver o GraphQL Playground'
+      docs: 'Acesse /graphql para ver o GraphQL Playground',
+      features: [
+        'Programação de Irrigação',
+        'Controle de Irrigação em Tempo Real',
+        'Histórico de Irrigações',
+        'Alertas e Notificações',
+        'Relatórios e Estatísticas'
+      ]
     });
   });
 
