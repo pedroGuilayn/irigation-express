@@ -3,6 +3,7 @@ const StatusIrrigacao = require('../models/StatusIrrigacao');
 const ProgramacaoIrrigacao = require('../models/ProgramacaoIrrigacao');
 const Alerta = require('../models/Alerta');
 const apiExterna = require('../services/apiExterna');
+const logProducer = require('../messageService/Producer');
 
 const controleResolvers = {
   Mutation: {
@@ -69,6 +70,13 @@ const controleResolvers = {
             });
           } catch (error) {
             console.error('Erro ao enviar comando para dispositivo:', error);
+
+            // Enviar log crítico para RabbitMQ
+            await logProducer.sendLog(
+              `CRITICAL: Falha ao comunicar com dispositivo ${setor.dispositivoId} ao iniciar irrigação manual no setor ${setorId}. Erro: ${error.message}`,
+              usuarioId
+            );
+
             // Criar alerta de falha
             await new Alerta({
               tipo: 'DISPOSITIVO_OFFLINE',
@@ -84,6 +92,11 @@ const controleResolvers = {
 
         return historico;
       } catch (error) {
+        // LOG CRITICO: Erro ao iniciar irrigacao
+        await logProducer.sendLog(
+          `ERRO CRITICO: Falha ao iniciar irrigacao manual - ${error.message} | Setor: ${input.setorId}`,
+          input.usuarioId || 'system'
+        );
         throw new Error(`Erro ao iniciar irrigação manual: ${error.message}`);
       }
     },
@@ -146,6 +159,12 @@ const controleResolvers = {
 
         // Verificar se houve problema (duração muito diferente do planejado)
         if (historico.status === 'CONCLUIDA' && duracaoReal < historico.duracaoPlanejada * 0.8) {
+          // Enviar log de alerta para RabbitMQ
+          await logProducer.sendLog(
+            `WARNING: Irrigação interrompida prematuramente no setor ${setorId}. Duração real: ${duracaoReal} minutos, Planejado: ${historico.duracaoPlanejada} minutos`,
+            usuarioId
+          );
+
           await new Alerta({
             tipo: 'FALHA_IRRIGACAO',
             severidade: 'MEDIA',
@@ -159,6 +178,11 @@ const controleResolvers = {
 
         return historico;
       } catch (error) {
+        // LOG CRITICO: Erro ao parar irrigacao
+        await logProducer.sendLog(
+          `ERRO CRITICO: Falha ao parar irrigacao - ${error.message} | Setor: ${input.setorId}`,
+          input.usuarioId || 'system'
+        );
         throw new Error(`Erro ao parar irrigação: ${error.message}`);
       }
     },
@@ -232,6 +256,12 @@ const controleResolvers = {
             historico.motivoFalha = 'Falha ao comunicar com dispositivo';
             await historico.save();
 
+            // Enviar log crítico para RabbitMQ
+            await logProducer.sendLog(
+              `CRITICAL: Falha ao executar irrigação programada (ID: ${programacao._id}) no setor ${programacao.setorId}. Dispositivo ${setor.dispositivoId} offline. Erro: ${error.message}`,
+              null
+            );
+
             // Criar alerta
             await new Alerta({
               tipo: 'FALHA_IRRIGACAO',
@@ -266,6 +296,11 @@ const controleResolvers = {
 
         return historico;
       } catch (error) {
+        // LOG CRITICO: Erro ao executar programacao
+        await logProducer.sendLog(
+          `ERRO CRITICO: Falha ao executar programacao - ${error.message} | Programacao ID: ${programacaoId}`,
+          'system'
+        );
         throw new Error(`Erro ao executar programação: ${error.message}`);
       }
     }

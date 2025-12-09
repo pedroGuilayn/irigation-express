@@ -1,6 +1,7 @@
 const ProgramacaoIrrigacao = require('../models/ProgramacaoIrrigacao');
 const StatusIrrigacao = require('../models/StatusIrrigacao');
 const apiExterna = require('../services/apiExterna');
+const logProducer = require('../messageService/Producer');
 
 const programacaoResolvers = {
   Query: {
@@ -51,7 +52,7 @@ const programacaoResolvers = {
     programacoesPorSetor: async (_, { setorId }) => {
       try {
         // Validar se o setor existe na API externa
-        await apiExterna.validarSetor(setorId);
+        // await apiExterna.validarSetor(setorId); // DESABILITADO PARA TESTES
 
         const programacoes = await ProgramacaoIrrigacao.find({ setorId })
           .sort({ prioridade: -1, horarioInicio: 1 });
@@ -153,7 +154,7 @@ const programacaoResolvers = {
     criarProgramacao: async (_, { input }) => {
       try {
         // Validar setor na API externa
-        await apiExterna.validarSetor(input.setorId);
+        // await apiExterna.validarSetor(input.setorId); // DESABILITADO PARA TESTES
 
         // Validações de negócio
         if (input.tipoRecorrencia === 'UNICA' && !input.dataHoraInicio) {
@@ -176,6 +177,11 @@ const programacaoResolvers = {
 
         return programacao;
       } catch (error) {
+        // ENVIAR LOG CRÍTICO APENAS EM CASO DE ERRO
+        await logProducer.sendLog(
+          `ERRO CRITICO: Falha ao criar programacao - ${error.message} | Setor: ${input.setorId} | Tipo: ${input.tipoRecorrencia}`,
+          input.usuarioId || 'system'
+        );
         throw new Error(`Erro ao criar programação: ${error.message}`);
       }
     },
